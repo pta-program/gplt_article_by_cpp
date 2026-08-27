@@ -75,6 +75,9 @@
       display: block; padding: 0 !important; background: transparent !important; color: var(--text-color) !important;
       font: 400 13.5px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre !important;
     }
+    .markdown-section .mermaid { margin: 1.25em 0; overflow-x: auto; text-align: center; }
+    .markdown-section .mermaid svg { max-width: 100%; height: auto; }
+    .mermaid-render-error { padding: 12px 16px; color: #b42318; background: #fff1f0; border: 1px solid #f3b8b2; border-radius: 8px; text-align: left; }
     .token.comment { color: #7c8798 !important; font-style: italic; }
     .token.keyword, .token.builtin, .token.tag { color: #174ea6 !important; font-weight: 600; }
     .token.string, .token.char, .token.regex { color: #087f5b !important; }
@@ -150,20 +153,36 @@
       count: { countable: true, language: 'chinese', fontsize: '0.9em', color: 'var(--muted-color)' },
       copyCode: { buttonText: '复制', errorText: '失败', successText: '已复制' },
       alias: { '/.*/_sidebar.md': '/_sidebar.md' },
-      plugins: [function (hook) {
-        hook.doneEach(function () {
-          document.querySelectorAll('pre code.lang-mermaid, pre code.language-mermaid').forEach(function (code) {
-            var diagram = document.createElement('div');
-            diagram.className = 'mermaid'; diagram.textContent = code.textContent;
-            code.parentElement.replaceWith(diagram);
-          });
-          if (window.mermaid) window.mermaid.run();
-        });
-      }]
+      markdown: {
+        renderer: {
+          code: function (code, lang) {
+            if (lang !== 'mermaid') return this.origin.code.apply(this, arguments);
+            var id = 'mermaid-' + (++window.__mermaidCounter);
+            var containerId = id + '-container';
+            Promise.resolve().then(function () {
+              return window.mermaid.render(id, code);
+            }).then(function (result) {
+              var container = document.getElementById(containerId);
+              if (container) container.innerHTML = result.svg;
+            }).catch(function (error) {
+              var container = document.getElementById(containerId);
+              if (container) {
+                container.className = 'mermaid-render-error';
+                container.textContent = '流程图渲染失败：' + (error && error.message ? error.message : 'Mermaid 语法错误');
+              }
+              console.error('Mermaid render failed', error);
+            });
+            return '<div class="mermaid" id="' + containerId + '"></div>';
+          }
+        }
+      }
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-  <script>mermaid.initialize({ startOnLoad: false, theme: 'neutral' });</script>
+  <script>
+    window.__mermaidCounter = 0;
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'strict' });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
