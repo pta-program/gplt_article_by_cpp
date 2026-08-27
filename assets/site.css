@@ -88,7 +88,7 @@ body, .sidebar, .markdown-section, .app-nav, .search .search input {
 
 .sidebar-nav li.active > a { font-weight: 650; }
 
-/* 题目内目录是当前题目的直接子级，H2/H3 统一平铺。 */
+/* 题目内目录是当前题目的直接子级，覆盖 H1-H6 并按层级缩进。 */
 .sidebar-nav .page-toc {
   border-left: 1px solid var(--border);
   margin: 2px 0 4px 8px;
@@ -105,6 +105,12 @@ body, .sidebar, .markdown-section, .app-nav, .search .search input {
   font-size: 0.82rem;
   padding: 5px 9px;
 }
+
+.sidebar-nav .page-toc > li[data-level="2"] > a { padding-left: 17px; }
+.sidebar-nav .page-toc > li[data-level="3"] > a { padding-left: 25px; }
+.sidebar-nav .page-toc > li[data-level="4"] > a { padding-left: 33px; }
+.sidebar-nav .page-toc > li[data-level="5"] > a { padding-left: 41px; }
+.sidebar-nav .page-toc > li[data-level="6"] > a { padding-left: 49px; }
 
 .sidebar-nav .page-toc > li > a:hover,
 .sidebar-nav .page-toc > li.active > a {

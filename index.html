@@ -57,7 +57,10 @@
           var activeLink = document.querySelector('.sidebar-nav li.active > a, .sidebar-nav li.active > p > a');
           if (!activeLink) return;
           var activeItem = activeLink.closest('li');
-          var headings = Array.prototype.slice.call(document.querySelectorAll('#main h2, #main h3'));
+          // 将当前页面的全部标题同步到左侧目录，避免题解中的小节无法跳转。
+          var headings = Array.prototype.slice.call(document.querySelectorAll(
+            '#main h1, #main h2, #main h3, #main h4, #main h5, #main h6'
+          ));
           if (!headings.length) return;
 
           var toc = document.createElement('ul');
@@ -66,6 +69,7 @@
             var item = document.createElement('li');
             var link = document.createElement('a');
             link.className = 'section-link';
+            item.dataset.level = heading.tagName.substring(1);
             link.textContent = heading.textContent;
             link.href = vm.router.toURL(vm.router.getCurrentPath(), { id: heading.id });
             item.appendChild(link);
