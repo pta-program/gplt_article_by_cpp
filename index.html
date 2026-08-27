@@ -2,164 +2,58 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>PTA · GPLT 天梯赛 · C++ 实现</title>
-  <meta name="description" content="PTA GPLT 天梯赛 C++ 题解，覆盖 L1、L2、L3 共 225 题。">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css">
-  <style>
-    :root {
-      --theme-color: #00599c;
-      --page-bg: #ffffff;
-      --surface-bg: #ffffff;
-      --sidebar-bg: #f8fafc;
-      --border-color: #e5e7eb;
-      --text-color: #253044;
-      --muted-color: #64748b;
-      --code-bg: #f6f8fb;
-      --code-border: #dce3ec;
-      --inline-code-bg: #edf4fb;
-      --inline-code-text: #075985;
-      --dark-page-bg: #111827;
-      --dark-surface-bg: #1b2433;
-      --dark-sidebar-bg: #151d2b;
-      --dark-border-color: #2d3a4f;
-      --dark-text-color: #dbe4f0;
-      --dark-muted-color: #9aa9bd;
-      --dark-code-bg: #141c29;
-    }
-
-    html, body { background: var(--page-bg); color: var(--text-color); }
-    body { transition: background-color .2s ease, color .2s ease; }
-    .sidebar { background: var(--sidebar-bg); border-right: 1px solid var(--border-color); }
-    .sidebar-nav { padding: 18px 14px 72px; }
-    .sidebar-nav > ul > li > p,
-    .sidebar-nav > ul > li > strong { color: var(--text-color); font-weight: 700; }
-    .sidebar-nav ul ul li > strong { color: var(--muted-color); font-size: .88em; }
-    .sidebar-nav a { color: var(--text-color); line-height: 1.45; white-space: normal; overflow-wrap: anywhere; }
-    .sidebar-nav a:hover, .sidebar-nav .active > a { color: var(--theme-color); }
-    .sidebar-nav > ul > li { margin-top: 12px; }
-    .sidebar-nav > ul > li:first-child { margin-top: 0; }
-    .sidebar-nav li { cursor: pointer; }
-    .sidebar-nav ul:not(.app-sub-sidebar) > li:not(.file)::before { border-color: var(--muted-color); }
-    .sidebar-nav ul:not(.app-sub-sidebar) > li.open::before { border-color: var(--theme-color); }
-    /* 题目内目录统一平铺，H2/H3 不再按标题层级递进。 */
-    .sidebar-nav .page-toc > li { padding-left: 0; }
-    .markdown-section { max-width: 1080px; padding: 32px 30px 72px; }
-    .markdown-section h1, .markdown-section h2, .markdown-section h3 { color: var(--text-color); }
-    .markdown-section h1 { font-size: 2em; }
-    .markdown-section h2 { border-bottom: 1px solid var(--border-color); padding-bottom: .35em; }
-    .markdown-section a { color: var(--theme-color); }
-    .markdown-section blockquote { border-left-color: var(--theme-color); background: color-mix(in srgb, var(--theme-color) 5%, transparent); }
-    .markdown-section table { display: table; width: 100%; }
-    .markdown-section th { background: color-mix(in srgb, var(--theme-color) 8%, var(--surface-bg)); }
-    .markdown-section td, .markdown-section th { border-color: var(--border-color); }
-    .markdown-section p > code, .markdown-section li > code, .markdown-section td > code {
-      color: var(--inline-code-text); background: var(--inline-code-bg); border: 1px solid var(--code-border);
-      border-radius: 5px; padding: 2px 5px;
-    }
-    .markdown-section pre {
-      position: relative; margin: 1.25em 0; padding: 1.25rem 1.4rem !important;
-      background: var(--code-bg) !important; border: 1px solid var(--code-border) !important;
-      border-left: 3px solid var(--theme-color) !important; border-radius: 10px;
-      box-shadow: 0 5px 18px rgba(15, 23, 42, .06); overflow: auto;
-    }
-    .markdown-section pre[data-lang]::before {
-      content: attr(data-lang); position: absolute; top: 9px; right: 11px; z-index: 1;
-      color: var(--muted-color); font: 600 11px/1.4 ui-monospace, monospace; letter-spacing: .06em;
-      background: var(--surface-bg); border: 1px solid var(--code-border); border-radius: 999px; padding: 2px 7px;
-    }
-    .markdown-section pre[data-lang="in"], .markdown-section pre[data-lang="out"],
-    .markdown-section pre[data-lang="input"], .markdown-section pre[data-lang="output"] {
-      background: #fffaf0 !important; border: 1px dashed #e8d7b1 !important; border-left: 3px solid #e8a838 !important; box-shadow: none;
-    }
-    .markdown-section pre > code {
-      display: block; padding: 0 !important; background: transparent !important; color: var(--text-color) !important;
-      font: 400 13.5px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre !important;
-    }
-    .markdown-section .mermaid { margin: 1.25em 0; overflow-x: auto; text-align: center; }
-    .markdown-section .mermaid svg { max-width: 100%; height: auto; }
-    .mermaid-render-error { padding: 12px 16px; color: #b42318; background: #fff1f0; border: 1px solid #f3b8b2; border-radius: 8px; text-align: left; }
-    .token.comment { color: #7c8798 !important; font-style: italic; }
-    .token.keyword, .token.builtin, .token.tag { color: #174ea6 !important; font-weight: 600; }
-    .token.string, .token.char, .token.regex { color: #087f5b !important; }
-    .token.function { color: #2459c5 !important; }
-    .token.number, .token.boolean, .token.constant { color: #b45309 !important; }
-    .search .search input { color: var(--text-color); background: var(--surface-bg); border-color: var(--border-color); }
-    .search .search .search-keyword { color: var(--theme-color); }
-    .pagination-item a { color: var(--theme-color); }
-    .progress { background-color: var(--theme-color); }
-
-    .darklight-btn {
-      position: fixed; right: 24px; bottom: 24px; z-index: 9999; width: 42px; height: 42px;
-      display: grid; place-items: center; border: 1px solid var(--border-color); border-radius: 50%;
-      color: var(--theme-color); background: rgba(255,255,255,.88); box-shadow: 0 6px 20px rgba(15,23,42,.16);
-      backdrop-filter: blur(12px); cursor: pointer; font-size: 17px; line-height: 1;
-      transition: transform .2s ease, background-color .2s ease, color .2s ease;
-    }
-    .darklight-btn:hover { transform: translateY(-2px); }
-    .darklight-btn:focus-visible { outline: 3px solid rgba(0,89,156,.35); outline-offset: 3px; }
-    .darklight-btn .icon-sun { display: none; }
-
-    html.dark, body.dark-mode, body.dark {
-      --page-bg: var(--dark-page-bg); --surface-bg: var(--dark-surface-bg); --sidebar-bg: var(--dark-sidebar-bg);
-      --border-color: var(--dark-border-color); --text-color: var(--dark-text-color); --muted-color: var(--dark-muted-color);
-      --code-bg: var(--dark-code-bg); --code-border: var(--dark-border-color);
-      --inline-code-bg: #20314a; --inline-code-text: #a8d5ff;
-    }
-    body.dark-mode, body.dark { background: var(--page-bg); color: var(--text-color); }
-    body.dark-mode .markdown-section pre, body.dark .markdown-section pre { box-shadow: 0 7px 22px rgba(0,0,0,.22); }
-    body.dark-mode .markdown-section pre[data-lang="in"], body.dark .markdown-section pre[data-lang="in"],
-    body.dark-mode .markdown-section pre[data-lang="out"], body.dark .markdown-section pre[data-lang="out"] { background: #282318 !important; border-color: #554524 !important; }
-    body.dark-mode .token.comment, body.dark .token.comment { color: #7f8ca5 !important; }
-    body.dark-mode .token.keyword, body.dark .token.keyword, body.dark-mode .token.builtin, body.dark .token.builtin { color: #9eafff !important; }
-    body.dark-mode .token.string, body.dark .token.string, body.dark-mode .token.char, body.dark .token.char { color: #61d6b0 !important; }
-    body.dark-mode .token.function, body.dark .token.function { color: #72a7e8 !important; }
-    body.dark-mode .token.number, body.dark .token.number, body.dark-mode .token.boolean, body.dark .token.boolean { color: #f4b267 !important; }
-    body.dark-mode .darklight-btn, body.dark .darklight-btn { color: #ffd166; background: rgba(27,36,51,.92); }
-    body.dark-mode .darklight-btn .icon-moon, body.dark .darklight-btn .icon-moon { display: none; }
-    body.dark-mode .darklight-btn .icon-sun, body.dark .darklight-btn .icon-sun { display: inline; }
-    body.dark-mode .app-nav, body.dark .app-nav, body.dark-mode .github-corner, body.dark .github-corner { filter: brightness(.85); }
-
-    @media (max-width: 768px) {
-      .markdown-section { padding: 24px 18px 64px; }
-      .darklight-btn { right: 16px; bottom: 16px; width: 38px; height: 38px; font-size: 15px; }
-    }
-  </style>
+  <meta name="description" content="GPLT 天梯赛 C++ 语言实现题解库">
+  <title>GPLT · C++ 题解库</title>
   <script>
+    // 在 Docsify 加载前应用主题，避免刷新时闪现亮色页面。
     (function () {
       try {
-        var saved = localStorage.getItem('docsify-dark-mode');
-        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.classList.toggle('dark', dark);
-        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-      } catch (e) {}
+        var saved = localStorage.getItem('gplt-theme');
+        var dark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      } catch (error) {
+        document.documentElement.dataset.theme = 'light';
+      }
     }());
-  </script>
-</head>
-<body>
-  <div id="app">加载中...</div>
-  <button id="dark-mode-toggle" class="darklight-btn" type="button" aria-label="切换深色模式" title="切换深色模式">
-    <span class="icon-moon" aria-hidden="true">🌙</span><span class="icon-sun" aria-hidden="true">☀️</span>
-  </button>
-  <script>
+
     window.$docsify = {
-      name: 'PTA · GPLT 天梯赛 · C++ 实现',
+      name: 'GPLT · C++ 题解库',
       repo: 'https://github.com/Zonkidd-Shao/gplt_article_by_cpp',
       loadSidebar: true,
-      // 由下方插件将当前页面的 H2/H3 目录安全地插入当前题目节点。
-      // 关闭 Docsify v4 的自动字符串插入，避免下一题被错误缩进。
+      homepage: 'README.md',
+      relativePath: false,
+      mergeNavbar: true,
+      // 题目之间保持同级；题目内目录由插件平铺插入当前题目。
       subMaxLevel: 0,
-      // L1/L2/L3 分组下的所有题目保持同级；题目内目录由插件平铺插入。
       sidebarDisplayLevel: 2,
       auto2top: true,
-      search: { placeholder: '🔍 搜索题号 / 关键词', noData: '没有结果', depth: 4, maxAge: 86400000 },
-      pagination: { previousText: '上一题', nextText: '下一题', crossChapter: true },
-      count: { countable: true, language: 'chinese', fontsize: '0.9em', color: 'var(--muted-color)' },
-      copyCode: { buttonText: '复制', errorText: '失败', successText: '已复制' },
+      search: {
+        paths: 'auto',
+        placeholder: '搜索题号或关键词',
+        noData: '没有找到匹配内容',
+        depth: 4,
+        hideOtherSidebarContent: false
+      },
+      pagination: {
+        previousText: '上一题',
+        nextText: '下一题',
+        crossChapter: true,
+        crossChapterText: true
+      },
+      copyCode: {
+        buttonText: '复制代码',
+        errorText: '复制失败',
+        successText: '已复制'
+      },
+      themeColor: '#6d5dfc',
       alias: { '/.*/_sidebar.md': '/_sidebar.md' },
       plugins: [function (hook, vm) {
         hook.doneEach(function () {
+          document.querySelectorAll('.sidebar-nav .page-toc').forEach(function (toc) {
+            toc.remove();
+          });
+
           var activeLink = document.querySelector('.sidebar-nav li.active > a, .sidebar-nav li.active > p > a');
           if (!activeLink) return;
           var activeItem = activeLink.closest('li');
@@ -174,7 +68,7 @@
             link.className = 'section-link';
             link.textContent = heading.textContent;
             link.href = vm.router.toURL(vm.router.getCurrentPath(), { id: heading.id });
-          item.appendChild(link);
+            item.appendChild(link);
             toc.appendChild(item);
           });
           activeItem.appendChild(toc);
@@ -205,51 +99,35 @@
       }
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换暗黑模式" title="切换暗黑模式">
+    <span class="theme-toggle__icon" aria-hidden="true">☾</span>
+    <span class="theme-toggle__text">暗黑模式</span>
+  </button>
+
+  <div id="app">正在加载题解库…</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
   <script>
     window.__mermaidCounter = 0;
-    mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'strict' });
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'default'
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@3/dist/docsify-copy-code.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-count/dist/countable.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
-  <script>
-    (function () {
-      var key = 'docsify-dark-mode';
-      var button = document.getElementById('dark-mode-toggle');
-      if (!button) return;
-      function setDark(dark, save) {
-        document.documentElement.classList.toggle('dark', dark);
-        document.body.classList.toggle('dark-mode', dark);
-        document.body.classList.toggle('dark', dark);
-        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-        button.setAttribute('aria-label', dark ? '切换浅色模式' : '切换深色模式');
-        button.setAttribute('title', dark ? '切换浅色模式' : '切换深色模式');
-        if (save) try { localStorage.setItem(key, dark ? 'dark' : 'light'); } catch (e) {}
-      }
-      var saved = null;
-      try { saved = localStorage.getItem(key); } catch (e) {}
-      setDark(saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches, false);
-      button.addEventListener('click', function () { setDark(!document.body.classList.contains('dark-mode'), true); });
-      document.addEventListener('keydown', function (event) {
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'd') {
-          event.preventDefault(); setDark(!document.body.classList.contains('dark-mode'), true);
-        }
-      });
-      var media = window.matchMedia('(prefers-color-scheme: dark)');
-      var systemChange = function (event) {
-        var preference = null; try { preference = localStorage.getItem(key); } catch (e) {}
-        if (!preference) setDark(event.matches, false);
-      };
-      if (media.addEventListener) media.addEventListener('change', systemChange);
-      else if (media.addListener) media.addListener(systemChange);
-    }());
-  </script>
+  <script src="assets/site.js"></script>
 </body>
 </html>
