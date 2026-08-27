@@ -6,6 +6,7 @@
   <meta name="description" content="PTA GPLT 天梯赛 C++ 题解，覆盖 L1、L2、L3 共 225 题。">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css">
   <style>
     :root {
       --theme-color: #00599c;
@@ -39,6 +40,9 @@
     .sidebar-nav a:hover, .sidebar-nav .active > a { color: var(--theme-color); }
     .sidebar-nav > ul > li { margin-top: 12px; }
     .sidebar-nav > ul > li:first-child { margin-top: 0; }
+    .sidebar-nav li { cursor: pointer; }
+    .sidebar-nav ul:not(.app-sub-sidebar) > li:not(.file)::before { border-color: var(--muted-color); }
+    .sidebar-nav ul:not(.app-sub-sidebar) > li.open::before { border-color: var(--theme-color); }
     .markdown-section { max-width: 1080px; padding: 32px 30px 72px; }
     .markdown-section h1, .markdown-section h2, .markdown-section h3 { color: var(--text-color); }
     .markdown-section h1 { font-size: 2em; }
@@ -138,7 +142,8 @@
       name: 'PTA · GPLT 天梯赛 · C++ 实现',
       repo: 'https://github.com/Zonkidd-Shao/gplt_article_by_cpp',
       loadSidebar: true,
-      subMaxLevel: 0,
+      subMaxLevel: 3,
+      sidebarDisplayLevel: 3,
       auto2top: true,
       search: { placeholder: '🔍 搜索题号 / 关键词', noData: '没有结果', depth: 4, maxAge: 86400000 },
       pagination: { previousText: '上一题', nextText: '下一题', crossChapter: true },
@@ -165,6 +170,7 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-count/dist/countable.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
   <script>
