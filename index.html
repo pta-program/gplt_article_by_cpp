@@ -17,6 +17,57 @@
       }
     }());
 
+    // Mermaid 图由题解 Markdown 动态生成。限制单页并发、源码规模和过期路由，
+    // 避免快速切页或异常大图造成 SVG/布局对象长期堆积。
+    var MERMAID_MAX_DIAGRAMS_PER_PAGE = 4;
+    var MERMAID_MAX_SOURCE_CHARS = 6000;
+    var MERMAID_MAX_SOURCE_LINES = 120;
+    var MERMAID_MAX_NODES = 80;
+    var MERMAID_MAX_EDGES = 120;
+    var MERMAID_MAX_SVG_CHARS = 200000;
+    var mermaidPending = [];
+    var mermaidRendering = false;
+    window.__mermaidRouteVersion = 0;
+    window.__mermaidPageDiagramCount = 0;
+
+    function mermaidLimitError(message) {
+      return '<div class="mermaid-render-error">流程图未渲染：' + message + '</div>';
+    }
+
+    function mermaidComplexity(code) {
+      var nodeMatches = code.match(/(?:^|\s)([A-Za-z][A-Za-z0-9_]*)\s*(?=\[|\(|\{)/gm) || [];
+      var edgeMatches = code.match(/-->|---|==>|-.->|~~~|--x|--o/g) || [];
+      return {
+        chars: code.length,
+        lines: code.split(/\r?\n/).length,
+        nodes: nodeMatches.length,
+        edges: edgeMatches.length
+      };
+    }
+
+    function drainMermaidQueue() {
+      if (mermaidRendering || !mermaidPending.length) return;
+      var task = mermaidPending.shift();
+      if (task.routeVersion !== window.__mermaidRouteVersion) {
+        drainMermaidQueue();
+        return;
+      }
+
+      mermaidRendering = true;
+      Promise.resolve().then(task.render).then(task.success).catch(task.failure).then(function () {
+        mermaidRendering = false;
+        drainMermaidQueue();
+      }, function () {
+        mermaidRendering = false;
+        drainMermaidQueue();
+      });
+    }
+
+    function enqueueMermaidRender(task) {
+      mermaidPending.push(task);
+      drainMermaidQueue();
+    }
+
     window.$docsify = {
       name: 'GPLT · C++ 题解库',
       repo: 'https://github.com/Zonkidd-Shao/gplt_article_by_cpp',
@@ -49,6 +100,13 @@
       themeColor: '#6d5dfc',
       alias: { '/.*/_sidebar.md': '/_sidebar.md' },
       plugins: [function (hook, vm) {
+        hook.beforeEach(function (markdown) {
+          window.__mermaidRouteVersion += 1;
+          window.__mermaidPageDiagramCount = 0;
+          mermaidPending.length = 0;
+          return markdown;
+        });
+
         hook.doneEach(function () {
           document.querySelectorAll('.sidebar-nav .page-toc').forEach(function (toc) {
             toc.remove();
@@ -82,20 +140,43 @@
         renderer: {
           code: function (code, lang) {
             if (lang !== 'mermaid') return this.origin.code.apply(this, arguments);
+            var complexity = mermaidComplexity(code);
+            if (complexity.chars > MERMAID_MAX_SOURCE_CHARS ||
+                complexity.lines > MERMAID_MAX_SOURCE_LINES ||
+                complexity.nodes > MERMAID_MAX_NODES ||
+                complexity.edges > MERMAID_MAX_EDGES) {
+              return mermaidLimitError('图规模超过安全上限（节点 ' + complexity.nodes +
+                '，连线 ' + complexity.edges + '，源码 ' + complexity.chars + ' 字符）');
+            }
+            if (window.__mermaidPageDiagramCount >= MERMAID_MAX_DIAGRAMS_PER_PAGE) {
+              return mermaidLimitError('单页流程图数量超过安全上限');
+            }
+            window.__mermaidPageDiagramCount += 1;
             var id = 'mermaid-' + (++window.__mermaidCounter);
             var containerId = id + '-container';
-            Promise.resolve().then(function () {
-              return window.mermaid.render(id, code);
-            }).then(function (result) {
-              var container = document.getElementById(containerId);
-              if (container) container.innerHTML = result.svg;
-            }).catch(function (error) {
-              var container = document.getElementById(containerId);
-              if (container) {
-                container.className = 'mermaid-render-error';
-                container.textContent = '流程图渲染失败：' + (error && error.message ? error.message : 'Mermaid 语法错误');
+            var routeVersion = window.__mermaidRouteVersion;
+            enqueueMermaidRender({
+              routeVersion: routeVersion,
+              render: function () {
+                if (routeVersion !== window.__mermaidRouteVersion) return null;
+                return Promise.resolve(window.mermaid.render(id, code));
+              },
+              success: function (result) {
+                if (!result || routeVersion !== window.__mermaidRouteVersion) return;
+                if (result.svg.length > MERMAID_MAX_SVG_CHARS) {
+                  throw new Error('生成的 SVG 过大');
+                }
+                var container = document.getElementById(containerId);
+                if (container) container.innerHTML = result.svg;
+              },
+              failure: function (error) {
+                var container = document.getElementById(containerId);
+                if (container && routeVersion === window.__mermaidRouteVersion) {
+                  container.className = 'mermaid-render-error';
+                  container.textContent = '流程图渲染失败：' + (error && error.message ? error.message : 'Mermaid 语法错误');
+                }
+                console.error('Mermaid render failed', error);
               }
-              console.error('Mermaid render failed', error);
             });
             return '<div class="mermaid" id="' + containerId + '"></div>';
           }

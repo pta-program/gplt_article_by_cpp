@@ -11,7 +11,7 @@
   --code-bg: #f4f5fa;
   --code-text: #272a3b;
   --shadow: 0 14px 40px rgba(47, 42, 115, 0.08);
-  --sidebar-width: 326px;
+  --sidebar-width: 300px;
 }
 
 html[data-theme="dark"] {
@@ -44,49 +44,60 @@ body, .sidebar, .markdown-section, .app-nav, .search .search input {
 .sidebar {
   background: var(--sidebar-bg);
   border-right: 1px solid var(--border);
-  padding: 22px 0 32px;
+  padding: 40px 0 32px;
   width: var(--sidebar-width);
 }
 
 .sidebar > h1 {
-  margin: 0 26px 22px;
+  margin: 0 auto 1rem;
   color: var(--text);
-  font-size: 1.2rem;
-  letter-spacing: 0.02em;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-align: center;
 }
 
 .sidebar-nav {
-  padding: 0 16px 0 22px;
+  line-height: 2em;
+  padding: 0 0 40px;
 }
 
-.sidebar-nav ul { margin: 0; }
-.sidebar-nav > ul > li { margin: 4px 0; }
-.sidebar-nav > ul > li > strong {
+.sidebar-nav ul { margin: 0 0 0 15px; }
+.sidebar-nav > ul > li { margin: 6px 0; }
+.sidebar-nav > ul > li > p {
   display: block;
-  margin: 22px 8px 8px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  margin: 0;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .sidebar-nav a {
   display: block;
-  border-radius: 8px;
+  border-radius: 0;
   color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.45;
-  padding: 7px 9px;
-  transition: color 0.18s ease, background 0.18s ease;
+  font-size: 14px;
+  line-height: inherit;
+  overflow: hidden;
+  padding: 0;
+  text-overflow: ellipsis;
+  transition: color 0.18s ease;
+  white-space: nowrap;
 }
 
-.sidebar-nav a:hover,
-.sidebar-nav li.active > a {
-  background: var(--accent-soft);
+.sidebar-nav a:hover {
   color: var(--accent);
+  text-decoration: underline;
+}
+
+.sidebar-nav li.active > a {
+  color: var(--accent);
+  border-right: 2px solid var(--accent);
+  text-decoration: none;
 }
 
 .sidebar-nav li.active > a { font-weight: 650; }
+
+.sidebar-nav ul li ul { padding: 0; }
 
 /* 题目内目录是当前题目的直接子级，覆盖 H1-H6 并按层级缩进。 */
 .sidebar-nav .page-toc {
@@ -103,7 +114,9 @@ body, .sidebar, .markdown-section, .app-nav, .search .search input {
 .sidebar-nav .page-toc > li > a {
   color: var(--muted);
   font-size: 0.82rem;
+  line-height: 1.6;
   padding: 5px 9px;
+  white-space: normal;
 }
 
 .sidebar-nav .page-toc > li[data-level="2"] > a { padding-left: 17px; }
