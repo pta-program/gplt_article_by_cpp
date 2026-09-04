@@ -85,13 +85,13 @@ cut
 ### 三、代码流程图
 ```mermaid
 flowchart TD
-    A([开始]) --> B[读取 N 和填充字符]
-    B --> C[读取原始字符串 s]
-    C --> D{s.length < N?}
-    D -- 是 --> E[计算 pad_count = N - s.length]
-    E --> F[构造 填充字符*pad_count + s]
-    D -- 否 --> G[截取 s.substr(s.length - N)]
-    F --> H[输出结果]
+    A([开始]) --> B["读取 N 和填充字符"]
+    B --> C["读取原始字符串 s"]
+    C --> D{"s.length < N?"}
+    D -- 是 --> E["计算 pad_count = N - s.length"]
+    E --> F["构造 填充字符*pad_count + s"]
+    D -- 否 --> G["截取 s.substr(s.length - N)"]
+    F --> H["输出结果"]
     G --> H
     H --> I([结束])
 ```
